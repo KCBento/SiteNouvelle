@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $dbname = "nouvelles_db";
-$user = "root";      // Modifier si nécessaire
-$pass = "";          // Modifier si nécessaire
+$user = "root";      
+$pass = "";          
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);

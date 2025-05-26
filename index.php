@@ -81,6 +81,7 @@ if (!empty($recherche)) {
                                 JOIN utilisateurs ON commentaires.auteur_id = utilisateurs.id
                                 WHERE nouvelle_id = ? ORDER BY date_commentaire ASC");
           $com->execute([$ligne['id']]);
+          //La div class comment permet d'afficher la zone de commentaire
           ?>
           <div class="comment-section">
             <h4>Commentaires :</h4>
