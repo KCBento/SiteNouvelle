@@ -74,6 +74,35 @@ if (!empty($recherche)) {
             <a href="televersements/<?= htmlspecialchars($ligne['fichier']); ?>"
                download class="btn">Télécharger</a>
           </div>
+
+          <?php
+          //Requete pour affichage des commentaires
+          $com = $pdo->prepare("SELECT commentaires.*, utilisateurs.nom_utilisateur FROM commentaires
+                                JOIN utilisateurs ON commentaires.auteur_id = utilisateurs.id
+                                WHERE nouvelle_id = ? ORDER BY date_commentaire ASC");
+          $com->execute([$ligne['id']]);
+          ?>
+          <div class="comment-section">
+            <h4>Commentaires :</h4>
+            <?php while ($c = $com->fetch()): ?>
+ 
+              <div class="comment"> 
+                <strong><?= htmlspecialchars($c['nom_utilisateur']) ?> :</strong>
+                <?= nl2br(htmlspecialchars($c['contenu'])) ?>
+                <?php if (isset($_SESSION['id_utilisateur']) && $_SESSION['id_utilisateur'] == $c['auteur_id']): ?>
+                  <a href="supprimer_commentaire.php?id=<?= $c['id'] ?>" class="btn delete">Supprimer</a>
+                <?php endif; ?>
+              </div>
+            <?php endwhile; ?>
+
+            <?php if (isset($_SESSION['id_utilisateur'])): ?>
+              <form method="POST" action="ajouter_commentaire.php" class="comment-form">
+                <input type="hidden" name="nouvelle_id" value="<?= $ligne['id'] ?>">
+                <textarea name="contenu" placeholder="Votre commentaire..." required></textarea>
+                <button type="submit" class="btn">Publier</button>
+              </form>
+            <?php endif; ?>
+          </div>
         </div>
       <?php endwhile; ?>
     </div>
@@ -82,17 +111,14 @@ if (!empty($recherche)) {
   <footer>
     <p>&copy; 2024 – Site de Nouvelles</p>
   </footer>
-  
- 
 
-  <script src="/scprits.js"></script>
+  <script src="scripts.js"></script>
 
   <div id="previewModal" class="modal">
-  <div class="modal-inner">
-    <span id="modalClose" class="close">&times;</span>
-    <iframe id="modalContent" class="modal-content" title="Prévisualisation en plein écran"></iframe>
+    <div class="modal-inner">
+      <span id="modalClose" class="close">&times;</span>
+      <iframe id="modalContent" class="modal-content" title="Prévisualisation en plein écran"></iframe>
+    </div>
   </div>
-</div>
-
 </body>
 </html>
